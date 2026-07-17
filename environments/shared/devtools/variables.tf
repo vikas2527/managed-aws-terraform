@@ -20,14 +20,14 @@ variable "subnet_id" {
 }
 
 variable "ami_id" {
-  description = "Ubuntu AMI ID for Jenkins EC2"
+  description = "Ubuntu AMI ID for devtools EC2"
   type        = string
 }
 
 variable "instance_type" {
-  description = "EC2 instance type for Jenkins"
+  description = "EC2 instance type for devtools"
   type        = string
-  default     = "t3.large"
+  default     = "t3.medium"
 }
 
 variable "key_name" {
@@ -36,7 +36,7 @@ variable "key_name" {
 }
 
 variable "vpn_cidr" {
-  description = "VPN tunnel CIDR — only source allowed to access Jenkins"
+  description = "VPN tunnel CIDR — only source allowed to access devtools"
   type        = string
   default     = "10.8.0.0/24"
 }
@@ -44,7 +44,13 @@ variable "vpn_cidr" {
 variable "root_volume_size" {
   description = "Root volume size in GB"
   type        = number
-  default     = 50
+  default     = 30
+}
+
+variable "eks_cluster_names" {
+  description = "EKS cluster names to configure kubectl for"
+  type        = list(string)
+  default     = []
 }
 
 variable "tags" {

@@ -14,20 +14,20 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "subnet_id" {
-  description = "Private subnet ID — from shared/vpc outputs"
+variable "public_subnet_id" {
+  description = "Public subnet ID — from shared/vpc outputs"
   type        = string
 }
 
 variable "ami_id" {
-  description = "Ubuntu AMI ID for Jenkins EC2"
+  description = "Ubuntu AMI ID for VPN EC2"
   type        = string
 }
 
 variable "instance_type" {
-  description = "EC2 instance type for Jenkins"
+  description = "EC2 instance type for VPN"
   type        = string
-  default     = "t3.large"
+  default     = "t3.small"
 }
 
 variable "key_name" {
@@ -36,15 +36,30 @@ variable "key_name" {
 }
 
 variable "vpn_cidr" {
-  description = "VPN tunnel CIDR — only source allowed to access Jenkins"
+  description = "VPN tunnel network CIDR"
   type        = string
   default     = "10.8.0.0/24"
+}
+
+variable "vpc_cidr" {
+  description = "Shared VPC CIDR — pushed to VPN clients"
+  type        = string
+}
+
+variable "dev_vpc_cidr" {
+  description = "Dev VPC CIDR — pushed to VPN clients"
+  type        = string
+}
+
+variable "prod_vpc_cidr" {
+  description = "Prod VPC CIDR — pushed to VPN clients"
+  type        = string
 }
 
 variable "root_volume_size" {
   description = "Root volume size in GB"
   type        = number
-  default     = 50
+  default     = 20
 }
 
 variable "tags" {
