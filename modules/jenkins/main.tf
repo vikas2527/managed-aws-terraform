@@ -180,53 +180,61 @@ resource "aws_iam_role_policy_attachment" "jenkins_ssm" {
 # ── User Data: Jenkins setup script ──────────────────────────────────────────
 locals {
   jenkins_userdata = <<-EOF
-    #!/bin/bash
-    set -e
+#!/bin/bash
+set -e
 
-    # Update system
-    apt-get update -y
-    apt-get upgrade -y
+# Update system
+apt-get update -y
+apt-get upgrade -y
 
-    # Install Java
-    apt-get install -y openjdk-17-jdk
+# Install Java
+apt-get install -y fontconfig openjdk-21-jre
 
-    # Install Jenkins
-    curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-    echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-    apt-get update -y
-    apt-get install -y jenkins
+# Add Jenkins repo with 2026 key
+mkdir -p /etc/apt/keyrings
+wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" | \
+  tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 
-    # Install Docker
-    apt-get install -y docker.io
-    usermod -aG docker jenkins
-    systemctl enable docker
-    systemctl start docker
+# Install Jenkins
+apt-get update -y
+apt-get install -y jenkins
 
-    # Install AWS CLI
-    apt-get install -y unzip curl
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    unzip awscliv2.zip
-    ./aws/install
+# Install Docker
+apt-get install -y docker.io
+usermod -aG docker jenkins
+systemctl enable docker
+systemctl start docker
 
-    # Install kubectl
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    chmod +x kubectl
-    mv kubectl /usr/local/bin/
+# Install AWS CLI
+apt-get install -y unzip curl
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+./aws/install
+rm -rf awscliv2.zip aws/
 
-    # Install Helm
-    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+mv kubectl /usr/local/bin/
 
-    # Install Trivy
-    apt-get install -y wget apt-transport-https gnupg
-    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -
-    echo deb https://aquasecurity.github.io/trivy-repo/deb generic main | tee /etc/apt/sources.list.d/trivy.list
-    apt-get update -y
-    apt-get install -y trivy
+# Install Helm
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 
-    # Start Jenkins
-    systemctl enable jenkins
-    systemctl start jenkins
-  EOF
+# Install Trivy
+apt-get install -y wget apt-transport-https gnupg
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | apt-key add -
+echo deb https://aquasecurity.github.io/trivy-repo/deb generic main | tee /etc/apt/sources.list.d/trivy.list
+apt-get update -y
+apt-get install -y trivy
+
+# Enable and start Jenkins
+systemctl enable jenkins
+systemctl start jenkins
+
+echo "Jenkins setup complete" >> /var/log/jenkins-setup.log
+EOF
 }
 
 # ── EC2 Instance ──────────────────────────────────────────────────────────────

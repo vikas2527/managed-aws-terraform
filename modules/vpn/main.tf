@@ -76,16 +76,6 @@ resource "aws_iam_role_policy_attachment" "vpn_ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# ── Elastic IP — static public IP for VPN ────────────────────────────────────
-resource "aws_eip" "vpn" {
-  domain   = "vpc"
-  instance = aws_instance.vpn.id
-
-  tags = merge(local.common_tags, {
-    Name = "${local.prefix}-vpn-eip"
-  })
-}
-
 # ── User Data: OpenVPN setup script ──────────────────────────────────────────
 locals {
   vpn_userdata = <<-EOF
@@ -128,12 +118,9 @@ locals {
     tls-auth ta.key 0
     server ${var.vpn_cidr}
     ifconfig-pool-persist /var/log/openvpn/ipp.txt
-
-    # Push routes to clients
     push "route ${var.vpc_cidr}"
     push "route ${var.dev_vpc_cidr}"
     push "route ${var.prod_vpc_cidr}"
-
     keepalive 10 120
     cipher AES-256-CBC
     user nobody
@@ -194,4 +181,14 @@ resource "aws_instance" "vpn" {
   lifecycle {
     ignore_changes = [ami, user_data]
   }
+}
+
+# ── Elastic IP — static public IP for VPN ────────────────────────────────────
+resource "aws_eip" "vpn" {
+  domain   = "vpc"
+  instance = aws_instance.vpn.id
+
+  tags = merge(local.common_tags, {
+    Name = "${local.prefix}-vpn-eip"
+  })
 }

@@ -2,9 +2,9 @@ aws_region   = "us-west-1"
 project_name = "margbooks"
 
 # From shared/vpc outputs
-shared_vpc_id                 = ""
-shared_vpc_cidr               = "10.0.0.0/16"
-shared_private_route_table_id = ""
+shared_vpc_id   = "vpc-0ecda9eda26ce55a4"
+shared_vpc_cidr = "10.0.0.0/16"
+shared_private_route_table_id = "rtb-06e3c3612ce75dd17"
 
 # From dev/vpc outputs
 dev_vpc_id                 = ""

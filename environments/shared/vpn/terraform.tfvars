@@ -2,12 +2,12 @@ aws_region   = "us-west-1"
 project_name = "margbooks"
 
 # From shared/vpc outputs
-vpc_id           = ""
-public_subnet_id = ""
+vpc_id           = "vpc-0ecda9eda26ce55a4"
+public_subnet_id = "subnet-0fa574d54980f46e7"
 
 # Ubuntu 22.04 LTS us-west-1
-ami_id        = "ami-0d50b6db6cff8ab82"
-instance_type = "t3.small"
+ami_id        = "ami-009e3ea390d774636"
+instance_type = "t3.micro"
 key_name      = "vikas-k8s-key"
 
 # VPN tunnel network

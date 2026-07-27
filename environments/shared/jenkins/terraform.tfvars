@@ -2,12 +2,12 @@ aws_region   = "us-west-1"
 project_name = "margbooks"
 
 # From shared/vpc outputs
-vpc_id    = ""
-subnet_id = ""
+vpc_id    = "vpc-0ecda9eda26ce55a4"
+subnet_id = "subnet-08fe0a2331e30d209"
 
 # Ubuntu 22.04 LTS us-west-1
-ami_id        = "ami-0d50b6db6cff8ab82"
-instance_type = "t3.large"
+ami_id        = "ami-009e3ea390d774636"
+instance_type = "c7i-flex.large"
 key_name      = "vikas-k8s-key"
 vpn_cidr      = "10.8.0.0/24"
 
