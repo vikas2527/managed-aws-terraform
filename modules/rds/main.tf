@@ -60,28 +60,9 @@ resource "aws_security_group_rule" "rds_egress" {
 # ── Parameter Group ───────────────────────────────────────────────────────────
 resource "aws_db_parameter_group" "main" {
   name        = "${local.prefix}-rds-pg"
-  family      = "postgres15"
+  family      = "postgres18"
   description = "Custom parameter group for ${local.prefix} PostgreSQL"
 
-  parameter {
-    name  = "log_connections"
-    value = "1"
-  }
-
-  parameter {
-    name  = "log_disconnections"
-    value = "1"
-  }
-
-  parameter {
-    name  = "log_duration"
-    value = "1"
-  }
-
-  parameter {
-    name  = "log_min_duration_statement"
-    value = "1000"
-  }
 
   tags = merge(local.common_tags, {
     Name = "${local.prefix}-rds-pg"

@@ -50,7 +50,6 @@ variable "db_password" {
 variable "instance_class" {
   description = "RDS instance class"
   type        = string
-  default     = "db.t3.medium"
 }
 
 variable "allocated_storage" {
@@ -68,7 +67,6 @@ variable "max_allocated_storage" {
 variable "postgres_version" {
   description = "PostgreSQL version"
   type        = string
-  default     = "15.4"
 }
 
 variable "tags" {

@@ -2,9 +2,12 @@ aws_region   = "us-west-1"
 project_name = "margbooks"
 
 repository_names = [
-  "margbooks/service-a",
-  "margbooks/service-b",
-  "margbooks/service-c"
+  "margbooks/catalog-api",
+  "margbooks/inventory-api",
+  "margbooks/customer-api",
+  "margbooks/order-api",
+  "margbooks/notification-api",
+  "margbooks/ui"
 ]
 
 image_tag_mutability = "MUTABLE"

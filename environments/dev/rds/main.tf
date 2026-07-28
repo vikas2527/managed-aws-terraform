@@ -31,7 +31,7 @@ module "rds" {
   max_allocated_storage      = var.max_allocated_storage
   postgres_version           = var.postgres_version
   multi_az                   = false
-  backup_retention_period    = 3
+  backup_retention_period    = 0
   deletion_protection        = false
   skip_final_snapshot        = true
   tags                       = var.tags
