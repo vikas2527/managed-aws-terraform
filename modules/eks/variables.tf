@@ -70,3 +70,12 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+variable "devtools_role_arn" {
+  description = "Devtools IAM role ARN for EKS access entry"
+  type        = string
+}
+
+variable "jenkins_role_arn" {
+  description = "Jenkins IAM role ARN for EKS access entry"
+  type        = string
+}

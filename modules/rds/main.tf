@@ -46,6 +46,19 @@ resource "aws_security_group_rule" "rds_from_vpn" {
   cidr_blocks       = [var.allowed_cidr_blocks[count.index]]
 }
 
+# ── Ingress from EKS Cluster Security Group ───────────────────────────────────
+resource "aws_security_group_rule" "rds_from_eks_cluster" {
+  count = var.eks_cluster_security_group_id != "" ? 1 : 0
+
+  type                     = "ingress"
+  security_group_id        = aws_security_group.rds.id
+  source_security_group_id = var.eks_cluster_security_group_id
+  description              = "Allow PostgreSQL from EKS cluster SG"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+}
+
 # ── Egress ────────────────────────────────────────────────────────────────────
 resource "aws_security_group_rule" "rds_egress" {
   type              = "egress"
@@ -60,7 +73,7 @@ resource "aws_security_group_rule" "rds_egress" {
 # ── Parameter Group ───────────────────────────────────────────────────────────
 resource "aws_db_parameter_group" "main" {
   name        = "${local.prefix}-rds-pg"
-  family      = "postgres18"
+  family      = "postgres18ye"
   description = "Custom parameter group for ${local.prefix} PostgreSQL"
 
 
@@ -97,11 +110,6 @@ resource "aws_db_instance" "main" {
 
   # Availability
   multi_az = var.multi_az
-
-  # Backup
-  backup_retention_period = var.backup_retention_period
-  backup_window           = "03:00-04:00"
-  maintenance_window      = "Mon:04:00-Mon:05:00"
 
   # Protection
   deletion_protection       = var.deletion_protection

@@ -31,5 +31,7 @@ module "eks" {
   node_max_size       = var.node_max_size
   node_disk_size      = var.node_disk_size
   allowed_cidr_blocks = var.allowed_cidr_blocks
+  devtools_role_arn   = var.devtools_role_arn
+  jenkins_role_arn    = var.jenkins_role_arn
   tags                = var.tags
 }

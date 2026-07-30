@@ -99,3 +99,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+variable "eks_cluster_security_group_id" {
+  description = "EKS cluster security group ID auto-created by EKS"
+  type        = string
+  default     = ""
+}

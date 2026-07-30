@@ -1,78 +1,70 @@
 variable "aws_region" {
-  description = "AWS region"
-  type        = string
-  default     = "us-west-1"
+  type    = string
+  default = "us-west-1"
 }
 
 variable "project_name" {
-  description = "Project name"
-  type        = string
+  type = string
 }
 
 variable "vpc_id" {
-  description = "Prod VPC ID — from prod/vpc outputs"
-  type        = string
+  type = string
 }
 
 variable "private_subnet_ids" {
-  description = "Private subnet IDs — from prod/vpc outputs"
-  type        = list(string)
+  type = list(string)
 }
 
 variable "allowed_security_group_ids" {
-  description = "EKS node security group ID — from prod/eks outputs"
-  type        = list(string)
-  default     = []
+  type    = list(string)
+  default = []
 }
 
 variable "allowed_cidr_blocks" {
-  description = "VPN CIDR — for psql access from devtools"
-  type        = list(string)
-  default     = []
+  type    = list(string)
+  default = []
+}
+
+variable "eks_cluster_security_group_id" {
+  description = "EKS cluster security group ID auto-created by EKS"
+  type        = string
+  default     = ""
 }
 
 variable "db_name" {
-  description = "Database name"
-  type        = string
+  type = string
 }
 
 variable "db_username" {
-  description = "Database master username"
-  type        = string
+  type = string
 }
 
 variable "db_password" {
-  description = "Database master password"
-  type        = string
-  sensitive   = true
+  type      = string
+  sensitive = true
 }
 
 variable "instance_class" {
-  description = "RDS instance class"
-  type        = string
-  default     = "db.t3.large"
+  type    = string
+  default = "db.t3.large"
 }
 
 variable "allocated_storage" {
-  description = "Allocated storage in GB"
-  type        = number
-  default     = 100
+  type    = number
+  default = 100
 }
 
 variable "max_allocated_storage" {
-  description = "Maximum storage in GB"
-  type        = number
-  default     = 500
+  type    = number
+  default = 500
 }
 
 variable "postgres_version" {
-  description = "PostgreSQL version"
-  type        = string
-  default     = "15.4"
+  type    = string
+  default = "15.4"
 }
 
 variable "tags" {
-  description = "Additional tags"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }

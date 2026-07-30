@@ -79,7 +79,7 @@ resource "aws_security_group_rule" "cluster_ingress_vpn" {
   count             = length(var.allowed_cidr_blocks)
   type              = "ingress"
   security_group_id = aws_security_group.cluster.id
-  description       = "Allow kubectl from VPN"
+  description       = "Allow kubectl from VPN and shared VPC"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
@@ -144,10 +144,15 @@ resource "aws_eks_cluster" "main" {
   version  = var.cluster_version
 
   vpc_config {
-    subnet_ids              = concat(var.private_subnet_ids, var.public_subnet_ids)
+    subnet_ids              = var.private_subnet_ids
     security_group_ids      = [aws_security_group.cluster.id]
     endpoint_private_access = true
     endpoint_public_access  = false
+  }
+
+  access_config {
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
   }
 
   enabled_cluster_log_types = [
@@ -216,3 +221,53 @@ resource "aws_iam_openid_connect_provider" "eks" {
     Name = "${local.prefix}-eks-oidc"
   })
 }
+
+# ── EKS Access Entries ────────────────────────────────────────────────────────
+resource "aws_eks_access_entry" "devtools" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.devtools_role_arn
+  type          = "STANDARD"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.prefix}-eks-devtools-access"
+  })
+
+  depends_on = [aws_eks_cluster.main]
+}
+
+resource "aws_eks_access_entry" "jenkins" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.jenkins_role_arn
+  type          = "STANDARD"
+
+  tags = merge(local.common_tags, {
+    Name = "${local.prefix}-eks-jenkins-access"
+  })
+
+  depends_on = [aws_eks_cluster.main]
+}
+
+resource "aws_eks_access_policy_association" "devtools" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.devtools_role_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.devtools]
+}
+
+resource "aws_eks_access_policy_association" "jenkins" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.jenkins_role_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+
+  depends_on = [aws_eks_access_entry.jenkins]
+}
+

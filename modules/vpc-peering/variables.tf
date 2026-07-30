@@ -43,3 +43,27 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "vpn_cidr" {
+  description = "VPN tunnel CIDR to add routes for"
+  type        = string
+  default     = ""
+}
+
+variable "peer_public_route_table_id" {
+  description = "Public route table ID of the peer VPC"
+  type        = string
+  default     = ""
+}
+
+variable "vpc_public_route_table_id" {
+  description = "Public route table ID of the shared VPC"
+  type        = string
+  default     = ""
+}
+
+variable "add_vpn_route_to_shared" {
+  description = "Whether to add VPN route to shared VPC route table — skip if already exists"
+  type        = bool
+  default     = true
+}
