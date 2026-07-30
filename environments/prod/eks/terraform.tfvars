@@ -7,7 +7,7 @@ private_subnet_ids = ["subnet-0b6b83eabc840576f", "subnet-0ed0195de14a5349d"]
 public_subnet_ids  = ["subnet-056de7cf4ee65e4a1", "subnet-0652431c6008686d2"]
 
 cluster_version     = "1.36"
-node_instance_types = ["t3.micro"]
+node_instance_types = ["c7i-flex.large"]
 node_desired_size   = 3
 node_min_size       = 2
 node_max_size       = 10
